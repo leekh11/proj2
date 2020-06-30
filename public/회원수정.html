@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+    <link rel="stylesheet" href="../css/proStyle.css">
+</head>
+<body>
+    <div id="header">
+        <div style="width: 23vw; ">
+            <a href="../start.html"><img src="../images/icon.png" width="250px" height="150px"
+                    style=" border-radius: 50px;"></a>
+        </div>
+        <div style="width: 70vw; text-decoration: none; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 1em; color: black;">
+            <div id="id_news" style=" position: relative; top: 30px;  left: 300px; ">
+            </div>
+            <button style="position: relative; left: 500px; border: none; background-color: rgba(0, 0, 0, 0);  color: royalblue;" onclick="f_next()">next >></button>
+            <br>
+        </div>
+    </div>
+        
+
+    <div style="position: relative; top: 0px;">
+    <form  action="회원수정처리.html" >
+        <table class="table table-striped table-bordered"
+            style=" position: relative; width: 60vw; margin: 0 auto; top: 50px;">
+            <tbody>
+                <tr>
+                    <th>아이디</th>
+                    <td><input type="text" name="memId" id="idMem" readonly> 
+                    </td>
+                </tr>
+                <tr>
+                    <th>비밀번호</th>
+                    <td><input type="password" name="memPass" id="passMem">
+                    </td>
+                </tr>
+                <tr>
+                    <th>이름</th>
+                    <td><input type="text" name="memName" id="nameMem">
+                    </td>
+                </tr>
+                <tr>
+                    <th>우편번호</th>
+                    <td>
+                        <input type="text" id="sample6_postcode" name="memZip">
+                        <input type="button" onclick="sample6_execDaumPostcode()" class="btn btn-sm btn-primary"
+                            value="우편번호 찾기">
+                        <!-- <input type="text" name="memZip" class="form-control input-sm" placeholder="우편번호"> -->
+                    </td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td>
+                        <input type="text" id="sample6_address" name="memAdd1"><br>
+                        <input type="text" id="sample6_detailAddress" name="memAdd2"> &nbsp;
+                        <input type="text" id="sample6_extraAddress" name="memAdd3">
+                        <!-- <input type="text" name="memAdd1" class="form-control input-sm" placeholder="기본 주소">
+                        -
+                        <input type="text" name="memAdd2" class="form-control input-sm" placeholder="상세 주소"> -->
+                    </td>
+                </tr>
+                <tr>
+                    <th>주민등록번호</th>
+                    <td>
+                        <input type="text" name="memRegFront" id="regFMem">-<input type="password" name="memRegBack"
+                            id="regBMem">
+                    </td>
+                </tr>
+                <tr>
+                    <th>전화번호</th>
+                    <td><input type="tel" name="memHp" id="hpMem"></td>
+                </tr>
+                <tr>
+                    <th>메일</th>
+                    <td><input type="tel" name="memMail" id="mailMem"></td>
+                </tr>
+                <tr >
+                    <td colspan="2">
+                        <a onclick="f_start()" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-list"
+                          aria-hidden="true"></span> 돌아가기</a>
+                          &nbsp;&nbsp;
+                        <input type="submit" value="수정하기" class="btn btn-sm btn-success"
+                            style=" width: 100px; position: relative; left: 200px;"
+                          >
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button onclick="f_del()" class="btn btn-warning btn-sm" style=" width: 100px; position: relative; left: 400px;"><span class="glyphicon glyphicon-trash"
+                                aria-hidden="true"></span> 탈퇴하기</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+    <br>
+    <br>
+    <br>
+    <script>
+
+        var id = request.getParameter("id");
+        function f_start(){
+            location.replace("../start.html?id="+id);
+        }
+        var member = JSON.parse(localStorage.getItem("mem"));
+        var mem;
+        for (var i = 0; i < member.length; i++) {
+            if (member[i].id == id) {
+                document.getElementById("idMem").value = member[i].id;
+                // document.getElementById("passMem").value = member[i].pass;
+                document.getElementById("nameMem").value = member[i].name;
+                document.getElementById("sample6_postcode").value = member[i].zip;
+                document.getElementById("sample6_address").value = (member[i].address).split("/")[0];
+                document.getElementById("sample6_detailAddress").value = member[i].address.split("/")[1];
+                document.getElementById("sample6_extraAddress").value = member[i].address.split("/")[2];
+                document.getElementById("regFMem").value = member[i].reg.split("-")[0];
+                document.getElementById("regBMem").value = member[i].reg.split("/")[1];
+                document.getElementById("hpMem").value = member[i].hp;
+                document.getElementById("mailMem").value = member[i].mail;
+                mem = member[i];
+                break;
+            }
+        }
+        function f_del() {
+            location.replace("회원탈퇴.html?id="+id+"&pass="+ document.getElementById("passMem").value)
+        }
+        // console.log(id);
+
+        var startN = 0;
+        var endN = 1;
+
+        $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i < endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+
+        function f_next() {
+            startN = (startN +1)%6;
+            endN = (endN+1)%6;
+            console.log(startN);
+            console.log(endN);
+            $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i <= endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+        }
+    </script>
+
+</body>
+
+</html>

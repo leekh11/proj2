@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+    <script src="ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="../css/proStyle.css">
+</head>
+<body>
+    <div id="header">
+        <div style="width: 23vw; ">
+            <a href="../start.html"><img src="../images/icon.png" width="250px" height="150px"
+                    style=" border-radius: 50px;"></a>
+        </div>
+        <div style="width: 70vw; text-decoration: none; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 1em; color: black;">
+            <div id="id_news" style=" position: relative; top: 30px;  left: 300px; ">
+            </div>
+            <button style="position: relative; left: 500px; border: none; background-color: rgba(0, 0, 0, 0);  color: royalblue;" onclick="f_next()">next >></button>
+            <br>
+        </div>
+    </div>
+        
+    <!-- category: "건의"
+    content: "안녕하세요1"
+    id: "mem1"
+    reply: ["안녕하세요!", "안녕하세요!", "안녕하세요!", "안녕하세요!"]
+    time: "2020/05/05"
+    title: "title1"
+    uniq: 1 -->
+    <div id="boardWrite"  style="position: relative; top: -50px; ">
+        <form action="writeAction.html">
+            <input type="hidden" name="boardUniq" id="id_uniq">
+            <table class='table table-striped table-bordered'>
+                <tbody>
+                    <tr>
+                        <td>
+                            아이디
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardId" id="textId" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            분류
+                        </td>
+                        <td>
+                            <select class="form-control" name="boardCategory" >
+                                <option class="form-control"  value="잡담">잡담</option>
+                                <option class="form-control" value="팁">팁</option>
+                                <option class="form-control" value="이벤트">이벤트</option>
+                                <option class="form-control" value="건의">건의</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            time
+                        </td>
+                        <td>
+                            <input type="date" class="form-control" name="boardTime">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            title
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardTitle">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <textarea name="boardContent"></textarea><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <input type="button" class="btn btn-sm" value="뒤로가기" id="f_back">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="submit" class="btn btn-sm btn-success" value="글쓰기">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <script>
+            CKEDITOR.replace('boardContent', {
+                height: 300,
+                filebrowserUploadUrl: "/CKEditor/serverPhp.php?type=file",
+     filebrowserImageUploadUrl: "/CKEditor/serverPhp.php?type=image",
+            });
+            var paramId = request.getParameter("id");
+            var member =  JSON.parse(localStorage.getItem("mem"));
+            var mem;
+            for(var i = 0; i < member.length; i++){
+                mem = member[i];
+                if(mem.id == paramId){
+                    break;
+                }
+            }
+            var board = JSON.parse(localStorage.getItem("board"));
+            var v_uniq = (board[board.length-1].uniq)*1 +1;
+            $("#id_uniq").val(v_uniq);
+            console.log(mem);
+            $("#f_back").click(function() {
+                location.replace("boardList.html?page=1&id="+paramId);
+            })
+            $("#textId").val(mem.id);
+
+            var startN = 0;
+        var endN = 1;
+
+        $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i < endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+
+        function f_next() {
+            startN = (startN +1)%6;
+            endN = (endN+1)%6;
+            console.log(startN);
+            console.log(endN);
+            $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i <= endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+        }
+
+        </script>
+    </div>
+    <script>
+
+    </script>
+</body>
+
+</html>

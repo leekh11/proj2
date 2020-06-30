@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/pro2.js"></script>
+</head>
+<body>
+    <script>
+        var v_uniq = request.getParameter("uniq");
+        var  v_id ;
+        var boardCk = JSON.parse(localStorage.getItem("board"));
+        for(var i=0; i<boardCk.length; i++){
+            var boC = boardCk[i];
+            if(v_uniq == boC.uniq){
+                v_id = boC.id;
+                boardCk.splice(i,1);
+                break;
+            }
+        }
+        localStorage.setItem("board", JSON.stringify(boardCk));
+        alert("삭제 완료. 메인화면으로 이동합니다.")
+        location.replace("boardList.html?page=1&id="+v_id);
+    </script>
+</body>
+</html>

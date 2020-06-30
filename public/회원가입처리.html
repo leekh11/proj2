@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/pro2.js"></script>
+</head>
+
+<body>
+    <script>
+        var v_id = request.getParameter("memId");
+        var v_pass = request.getParameter("memPass");
+        var v_name = request.getParameter("memName");
+        var v_zip = request.getParameter("memZip");
+        var v_add1 = request.getParameter("memAdd1").replace(/\+/g, " ");
+        var v_add2 = request.getParameter("memAdd2").replace(/\+/g, " ");
+        var v_add3 = request.getParameter("memAdd3").replace(/\+/g, " ");
+        var v_regFront = request.getParameter("memRegFront");
+        var v_regBack = request.getParameter("memRegBack");
+        var v_hp = request.getParameter("memHp");
+        var v_mail = request.getParameter("memMail");
+
+        var v_tblName = "mem";
+        var v_member = {};
+        v_member.id = v_id;
+        v_member.pass = v_pass;
+        v_member.name = v_name;
+        v_member.zip = v_zip;
+        v_member.address = v_add1 + " / " + v_add2 + " / " + v_add3;
+        v_member.reg = v_regFront + "-" + v_regBack;
+        v_member.hp = v_hp;
+        v_member.mail = v_mail;
+
+        var v_memList = [];
+        var v_isMemIn = localStorage.getItem(v_tblName);
+        if (!v_isMemIn) {
+            v_memList.push(v_member);
+            localStorage.setItem(v_tblName, JSON.stringify(v_memList));
+            alert("회원가입 완료 회원님의 아이디는 " + v_id + " 입니다.");
+            location.replace("../start.html");
+        } else {
+            v_memList = JSON.parse(localStorage.getItem(v_tblName));
+            v_memList.push(v_member);
+            localStorage.setItem(v_tblName, JSON.stringify(v_memList));
+            alert("회원가입 완료 회원님의 아이디는 " + v_id + " 입니다.");
+            location.replace("../start.html");
+        }
+
+    </script>
+</body>
+
+</html>

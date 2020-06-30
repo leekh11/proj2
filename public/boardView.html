@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+    <link rel="stylesheet" href="../css/proStyle.css">
+</head>
+<body>
+    <div id="header">
+        <div style="width: 23vw; ">
+            <a href="../start.html"><img src="../images/icon.png" width="250px" height="150px"
+                    style=" border-radius: 50px;"></a>
+        </div>
+        <div style="width: 70vw; text-decoration: none; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 1em; color: black;">
+            <div id="id_news" style=" position: relative; top: 30px;  left: 300px; ">
+            </div>
+            <button style="position: relative; left: 500px; border: none; background-color: rgba(0, 0, 0, 0);  color: royalblue;" onclick="f_next()">next >></button>
+            <br>
+        </div>
+    </div>
+
+    <div  style="position: relative; top: 0px; ">
+        <form action="boardUpdate.html" method="GET">
+            <input type="hidden" name="boardUniq" id="id_uniq">
+            <table class='table table-striped table-bordered'>
+                <tbody>
+                    <tr>
+                        <td>
+                            아이디
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardId" id="textId" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            분류
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardCategory" id="selectCategory"  readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            time
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardTime" id="textTime" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            title
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" name="boardTitle" id="textTitle" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="divContent">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;">
+                            <input type="button" class="btn btn-sm" value="뒤로가기" onclick="f_back()">
+                        </td>
+                        <td style="text-align: center;">
+                            <input type="submit" class="btn btn-sm btn-success" id="id_submit" style="display: none;"
+                                value="수정하기">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <table class='table table-striped'>
+            <tbody id="replyT">
+                <tr>
+                    <td style="width: 80%;">
+                        <input type="text" class="form-control" id="replyText">
+                    </td>
+                    <td style="width: 20%;">
+                        <input type="button" id="replyBtn" class="btn" value="댓글" onclick="f_reply()">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <script>
+        /*category: "건의"
+content: "안녕하세요1"
+id: "mem1"
+reply: ["안녕하세요!", "안녕하세요!", "안녕하세요!", "안녕하세요!"]
+time: "2020/05/05"
+title: "title1"
+uniq: 1*/
+        var uniq = request.getParameter("uniq");
+        var id = request.getParameter("id");
+        var board = JSON.parse(localStorage.getItem("board"));
+        var v_board;
+        for (var i = 0; i < board.length; i++) {
+            v_board = board[i];
+            if (board[i].uniq == uniq) {
+                break;
+            }
+        }
+
+        $("#id_uniq").val(v_board.uniq);
+        $("#textId").val(v_board.id);
+        $("#selectCategory").val(v_board.category);
+        $("#textTitle").val(v_board.title);
+        $("#textTime").val(v_board.time);
+        $("#divContent").html(v_board.content);
+        var replyStr = "";
+        // console.log(v_board.reply);
+        if (v_board.reply) {
+            for (var m = 0; m < v_board.reply.length; m++) {
+                var v_reply = v_board.reply[m];
+                replyStr += "<tr><td colspan='2'>" + v_reply + "</td></tr>";
+            }
+        }
+        // console.log(replyStr);
+        $("#replyT").append(replyStr);
+
+        // 리플 쓰기 
+        function f_reply() {
+            (v_board.reply).push(document.getElementById("replyText").value);
+            localStorage.setItem("board", JSON.stringify(board));
+            history.go(0);
+        }
+        // $("#replyBtn").click(function() {
+        //     alert(replyVal);
+        //     // console.log(replyVal);
+        //     (v_board.reply).push(replyVal) ;
+        //     localStorage.setItem("board" , JSON.stringify(board));
+        //     history.go(0);
+        // })
+
+        if (id == v_board.id) {
+            document.getElementById("id_submit").style.display = "block";
+        }
+        function f_back() {
+            location.replace("boardList.html?page=1&id="+id);
+        }
+
+        var startN = 0;
+        var endN = 1;
+
+        $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i < endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+
+        function f_next() {
+            startN = (startN +1)%6;
+            endN = (endN+1)%6;
+            console.log(startN);
+            console.log(endN);
+            $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i <= endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+        }
+    </script>
+</body>
+
+</html>

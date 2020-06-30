@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<div id="disp">
+    <h1>더미데이터 생성완료</h1>
+    <input type="button" onclick="f_start()" value="시작하기">
+    </div>
+<body>
+    <script>
+        function f_start(){
+            location.replace("start.html");
+        }
+        function f_mkName() {
+            return f_familyName() + f_name();
+        }
+        //한국 성씨
+        var v_korFamilyNames = "김,이,박,최,정,강,조,윤,장,임,한,오,서,신,권,황,안,송,전,홍,류,고,문,량,손," +
+            "배,조,백,허,유,남,심,로,정,하,곽,성,차,주,우,구,신,임,전,민,유,류,나,진,지,";
+        v_korFamilyNames = v_korFamilyNames.split(",");
+
+        //이름
+        var v_korNames = "성,영,상,재,종,정,동,용,승,경," +
+            "호,수,석,철,훈,현,진,영,환,식," +
+            "미,은,선,혜,지,덕,방,원,우,다," +
+            "희,숙,자,순,주,솔,별,국,민,일," +
+            "바,휴,왕,웅,범,대,익,중,낙,택,";
+        v_korNames = v_korNames.split(",");
+        // 랜덤한 성씨
+        function f_familyName() {
+            return v_korFamilyNames[Math.floor(Math.random() * v_korFamilyNames.length)];
+        }
+
+        //랜덤한 이름
+        function f_name() {
+            var v_name = v_korNames[Math.floor(Math.random() * v_korNames.length)];
+            return v_name;
+        }
+        // 페이지 나누기를 위한 더미데이타 넣기
+        var city = ["서울", "대전", "대구", "부산", "광주", "인천"];
+
+        function f_juminCheck(v_jumin1, v_jumin2) {
+            //1. A*2 + B*3 + ... + H*9 + I*2 + ... + L*5 의 총합을 구한다.
+            var v_values1 = v_jumin1.split("");
+            var v_values2 = v_jumin2.split("");
+            var v_A = v_values1[0] * 2;
+            var v_B = v_values1[1] * 3;
+            var v_C = v_values1[2] * 4;
+            var v_D = v_values1[3] * 5;
+            var v_E = v_values1[4] * 6;
+            var v_F = v_values1[5] * 7;
+
+            var v_G = v_values2[0] * 8;
+            var v_H = v_values2[1] * 9;
+            var v_I = v_values2[2] * 2;
+            var v_J = v_values2[3] * 3;
+            var v_K = v_values2[4] * 4;
+            var v_L = v_values2[5] * 5;
+
+            var v_sum = v_A + v_B + v_C + v_D + v_E + v_F +
+                v_G + v_H + v_I + v_J + v_K + v_L;
+
+            //2. 1번의 합을 11로 나눈 나머지를 구한다 
+            var v_namugi = v_sum % 11;
+            //3. 11에서 2번의 결과를 뺀다
+            //4. 3번의 결과가 0~9이면 값 그대로, 10이면 0, 11이면 1로 변환 
+            var v_check = (11 - v_namugi) % 10;
+            //4번의 결과와 M자리의 값이 같으면 맞는 번호이다.
+            return v_check;
+        }
+
+
+        var v_dataArr = [];
+
+        for (var i = 1; i < 150; i++) {
+            var v_member = {};
+            v_member.id = "mem" + i;
+            v_member.pass = "pass" + i;
+            v_member.name = f_mkName();
+            v_member.mail = v_member.id + "@" + v_member.name + ".com";
+            v_member.hp = "010-" + i + "" + i + "" + i + "" + i + "-" + i + "" + i + "" + i + "" + i;
+
+            var v_year = 40 + Math.round(Math.random() * 59); // 년도 40 ~ 99까지
+            var v_month = Math.ceil(Math.random() * 12);
+            if (v_month < 10) {
+                v_month = "0" + v_month;
+            }
+            var v_day = Math.ceil(Math.random() * 28);
+            if (v_day < 10) {
+                v_day = "0" + v_day;
+            }
+
+            var v_preNum = "" + v_year + v_month + v_day;
+
+            var v_postNumber = "";
+            v_postNumber += Math.ceil(Math.random() * 2);
+            for (var j = 1; j <= 5; j++) {
+                v_postNumber += Math.round(Math.random() * 9);
+            }
+
+            v_postNumber += f_juminCheck(v_preNum, v_postNumber);
+            v_completerJumin = v_preNum + "-" + v_postNumber;
+            v_member.reg = v_completerJumin;
+            v_member.zip = i + "" + i + "" + i + "" + i + "" + i;
+            v_member.address = city[Math.floor(Math.random() * city.length) + 1] + "hi" + i + "구 " + "hello길 " + i + "/" + i + "호/(" + i + "동, 행복아파트)";
+
+            v_dataArr.push(v_member);  // 만든 객체를 배열에 넣기
+            // 로컬스토리지에 더미데이터 저장
+            localStorage.setItem("mem", JSON.stringify(v_dataArr));
+        }
+        var boardArr = [];
+        var category = ["잡담" , "팁" , "이벤트" , "건의"];
+        for (var j = 1; j < 150; j++) {
+            var v_board = {};
+            v_board.uniq = j;
+            v_board.id = "mem" + j;
+            v_board.category = category[Math.floor(Math.random()*category.length)];
+            v_board.title = "title" + j;
+            v_board.time = "2020/05/05"
+            v_board.content = "안녕하세요" + j;
+            var reply = []
+            for(var k=0; k<4; k++){
+                reply.push("안녕하세요!");
+            }
+            v_board.reply = reply;
+            boardArr.push(v_board);
+            localStorage.setItem("board", JSON.stringify(boardArr));
+        }
+    </script>
+</body>
+
+</html>

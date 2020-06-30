@@ -1,0 +1,110 @@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    j쿼리
+
+            $.ajax({
+            method:"get",   // type 이라고 적어도 됨
+            url:"check.php",
+            data: $("form[name=nm_fm]").serialize(),
+            success:function(p_result){
+                alert(p_result);
+            }
+        });
+        
+        아작스제이쿼리
+
+        var v_ajax = new XMLHttpRequest();
+            v_ajax.open("get","dolgi.php",true);
+            v_ajax.send();
+
+            v_ajax.onreadystatechange = function(){
+                if(v_ajax.readyState == 4 && v_ajax.status == 200){
+                    alert(v_ajax.responseText);
+                }
+            }
+            아작스 기본 
+
+             // 로컬스토리지에 더미데이터 저장
+        localStorage.setItem("memberT", JSON.stringify(v_dataArr));
+            // 로컬스토리지에 데이터 가져오는 방법
+        var v_memList = JSON.parse(localStorage.getItem("memberT"));
+
+    request.getParameter 함수 만들기 js
+var request = {};
+
+request.getParameter = function (p_name) {
+    var v_jusoVal = location.href;
+    if(v_jusoVal.indexOf("?") == -1){
+        return null;
+    }
+    // ? 오른쪽 문자열만 빼기
+    v_jusoVal = decodeURIComponent(v_jusoVal.split("?")[1]).split("&") ;
+    for(var i=0; i<v_jusoVal.length; i++){
+        if(v_jusoVal[i].split("=")[0] == p_name ){
+              return v_jusoVal[i].split("=")[1];
+        }
+     }
+
+}
+// 과제 같은이름 여러개 넘어올때
+request.getParameterValues = function(p_name) {
+    var v_jusoVal = location.href;
+    var v_vals = [];
+    if(v_jusoVal.indexOf("?") == -1){
+        return null;
+    }
+    // ? 오른쪽 문자열만 빼기
+    v_jusoVal = decodeURIComponent(v_jusoVal.split("?")[1]).split("&") ;
+    for(var i=0; i<v_jusoVal.length; i++){
+        if(v_jusoVal[i].split("=")[0] == p_name ){
+            v_vals.push(v_jusoVal[i].split("=")[1]);
+        }
+     }
+     return v_vals;
+
+}
+    즉시 화면 이동
+    location.replace("회원리스트.html"); 
+
+-- 기본 틀
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/pro2.js"></script>
+</head>
+<body>
+    <div  id="header">
+
+    </div>
+    <div id="wrapper">
+        <div id="content">
+
+        </div>
+    </div>
+    <div id="footer">
+
+    </div>
+    <script>
+
+    </script>
+</body>
+</html>
+
+
+부트스트랩 cdn
+<!-- 합쳐지고 최소화된 최신 CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- 부가적인 테마 -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<!-- 폰트어썸 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+
+  https://fontawesome.com/icons?d=gallery

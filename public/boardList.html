@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+    <link rel="stylesheet" href="../css/proStyle.css">
+</head>
+
+<body>
+    <div id="header">
+        <div style="width: 23vw; ">
+            <a href="../start.html"><img src="../images/icon.png" width="250px" height="150px"
+                    style=" border-radius: 50px;"></a>
+        </div>
+        <div
+            style="width: 70vw; text-decoration: none; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 1em; color: black;">
+            <div id="id_news" style=" position: relative; top: 30px;  left: 300px; ">
+            </div>
+            <button
+                style="position: relative; left: 500px; border: none; background-color: rgba(0, 0, 0, 0);  color: royalblue;"
+                onclick="f_next()">next >></button>
+            <br>
+        </div>
+    </div>
+
+
+    <input type='button' style="position: relative; top: 0px; " class='btn btn-sm btn-primary' value='새글쓰기'
+        onclick='f_new()'> <br><br>
+    <div id="boardList" style="position: relative; top: 0px; ">
+
+    </div>
+    <script>
+        var reqId = request.getParameter("id");
+        var tbl = "board";
+        var dataB = JSON.parse(localStorage.getItem(tbl));
+
+        for (var a = 0; a < dataB.length; a++) {
+            for (var b = a + 1; b < dataB.length; b++) {
+                if (dataB[a].uniq < dataB[b].uniq) {
+                    var v_temp = dataB[a];
+                    dataB[a] = dataB[b];
+                    dataB[b] = v_temp;
+                }
+            }
+        }
+
+        function f_new() {
+            location.replace("boardWrite.html?id=" + reqId);
+        }
+        // 페이징
+        var curPage = 1;
+        var page = request.getParameter("page") * 1
+        if (page > 0) {
+            curPage = page;
+        }
+
+        var RowCnt = 10;
+        if (RowCnt < 1) {
+            RowCnt = 10;
+        }
+        var totalCnt = dataB.length;
+        var firstRow = (curPage - 1) * RowCnt + 1;
+        var lastRow = curPage * RowCnt;
+
+        var pageSize = 10;
+        if (pageSize < 1) {
+            pageSize = 10;
+        }
+
+        var totalPage = Math.floor((totalCnt - 1) / pageSize) + 1;
+
+        var startPage = Math.floor((curPage - 1) / pageSize) * pageSize + 1;
+        var endPage = startPage + pageSize - 1;
+        if (endPage > totalPage) {
+            endPage = totalPage;
+        }
+        /* 디버깅
+        var vo = []
+        vo.push(curPage);
+        vo.push(totalCnt);
+        vo.push(firstRow);
+        vo.push(lastRow);
+        vo.push(totalPage);
+        vo.push(startPage);
+        vo.push(endPage);
+        */
+        var tblSet = "<table class='table table-striped table-bordered' >"
+        tblSet += "<tr><th>index</th><th>category</th><th>id</th><th>time</th><th>title</th><th>content</th></tr>"
+        if (page < totalPage) {
+            for (var i = firstRow - 1; i < lastRow; i++) {
+                var board = dataB[i];
+                tblSet += "<tr>";
+                tblSet += "<td style='width='10px;''>" + (i + 1) + "</td>";
+                tblSet += "<td>" + board.category + "</td>";
+                tblSet += "<td>" + board.id + "</td>";
+                tblSet += "<td>" + board.time + "</td>";
+                tblSet += "<td><a href=boardView.html?uniq=" + board.uniq + "&id=" + reqId + ">" + board.title + "</td>";
+                tblSet += "<td>" + board.content + "</td>";
+                tblSet += "</tr>"
+            }
+        } else {
+            for (var i = firstRow - 1; i < totalCnt; i++) {
+                var board = dataB[i];
+                tblSet += "<tr>";
+                tblSet += "<td style='width : 10px;'>" + (i + 1) + "</td>";
+                tblSet += "<td>" + board.category + "</td>";
+                tblSet += "<td>" + board.id + "</td>";
+                tblSet += "<td>" + board.time + "</td>";
+                tblSet += "<td><a href='boardView.html?uniq=" + board.uniq + "&id=" + reqId + "'>" + board.title + "</td>";
+                tblSet += "<td>" + board.content + "</td>";
+                tblSet += "</tr>"
+            }
+        }
+        tblSet += "</table>";
+        tblSet += "<ul class='pagination' style='position:relative; left : 30vw;'>";
+
+        tblSet += "<li><a href='boardList.html?page=" + (startPage - 1) + "&id=" + reqId + "  ><span aria-hidden='true'>&laquo;</span></a></li>"
+
+
+        for (var j = startPage; j <= endPage; j++) {
+            if (j == curPage) {
+                tblSet += "<li><a href='boardList.html?page=" + j + "&id=" + reqId + "'  style=text-decoration:none;>" + j + "</a></li> "
+            } else {
+                tblSet += "<li><a href='boardList.html?page=" + j + "&id=" + reqId + "' style=text-decoration:none;> " + j + "  </a></li> "
+            }
+        }
+        tblSet += "<li><a href='boardList.html?page=" + (endPage + 1) + "&id=" + reqId + "' ><span aria-hidden='true'>&raquo;</span></a></li>"
+        tblSet += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' id='id_sch' > &nbsp;&nbsp;"
+        tblSet += "<input type='button' value='검색' class='btn btn-sm btn-primary' onclick='f_search()'>"
+        tblSet += "</ul>"
+
+        document.getElementById("boardList").innerHTML = tblSet;
+        //  디버깅
+        // console.log(vo);
+
+        dataB
+        function f_search() {
+            var searchW = $("#id_sch").val();
+            // console.log(searchW);
+
+            var tblSetS = "<h1>" + searchW + "검색 총 " + dataB.length + "개 </h1>"
+            tblSetS = "<table class='table table-striped table-bordered' >"
+            tblSetS += "<tr><th>index</th><th>category</th><th>id</th><th>time</th><th>title</th><th>content</th></tr>"
+            for (var s = 0; s < dataB.length; s++) {
+                var board = dataB[s];
+                if ((board.content).indexOf(searchW) > -1 || (board.id).indexOf(searchW) > -1 || (board.title).indexOf(searchW) > -1) {
+                    tblSetS += "<tr>";
+                    tblSetS += "<td style='width='10px;''>" + (s + 1) + "</td>";
+                    tblSetS += "<td>" + board.category + "</td>";
+                    tblSetS += "<td>" + board.id + "</td>";
+                    tblSetS += "<td>" + board.time + "</td>";
+                    tblSetS += "<td><a href=boardView.html?uniq=" + board.uniq + "&id=" + reqId + ">" + board.title + "</td>";
+                    tblSetS += "<td>" + board.content + "</td>";
+                    tblSetS += "</tr>"
+                }
+            }
+            tblSetS += "</table>";
+            tblSetS += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' id='id_sch'  style='position:relative; left : 30vw;'> &nbsp;&nbsp;"
+            tblSetS += "<input type='button' value='검색' class='btn btn-sm btn-primary' style='position:relative; left : 30vw;' onclick='f_search()' >"
+            // console.log(tblSet);
+            $("#boardList").html(tblSetS);
+        }
+
+        var startN = 0;
+        var endN = 1;
+
+        $.ajax({
+            method: "get",
+            url: "serverbypass.php?news=뉴스",
+            success: function (p_result) {
+                var v_recevData = JSON.parse(p_result);
+                for (var i = startN; i < endN; i++) {
+                    $("#id_news").html(
+                        v_recevData.channel.item[i].description + "<br>"
+                    );
+                }
+            }
+        })
+
+        function f_next() {
+            startN = (startN + 1) % 6;
+            endN = (endN + 1) % 6;
+            console.log(startN);
+            console.log(endN);
+            $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스",
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN; i <= endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                        );
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

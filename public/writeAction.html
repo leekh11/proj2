@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/pro2.js"></script>
+</head>
+
+<body>
+    <script>
+        var boardUniq = request.getParameter("boardUniq");
+        var boardId = request.getParameter("boardId");
+        var boardCategory = request.getParameter("boardCategory");
+        var boardTime = request.getParameter("boardTime");
+        var boardTitle = request.getParameter("boardTitle");
+        var boardContent = request.getParameter("boardContent");
+ 
+        
+        var v_tblName = "board";
+        var v_board = {};
+        v_board.uniq = boardUniq
+        v_board.id = boardId;
+        v_board.category = boardCategory;
+        v_board.time = boardTime;
+        v_board.title = boardTitle;
+        v_board.content = boardContent
+        v_board.reply = [];
+
+        var v_boardList = [];
+        var v_isBoardIn = localStorage.getItem(v_tblName);
+        if (!v_isBoardIn) {
+            v_boardList.push(v_board);
+
+            localStorage.setItem(v_tblName, JSON.stringify(v_boardList));
+            alert("글쓰기 완료! 게시판으로 이동합니다.");
+            location.replace("boardList.html");
+        } else {
+            v_boardList = JSON.parse(localStorage.getItem(v_tblName));
+            v_boardList.push(v_board);
+            
+            localStorage.setItem(v_tblName, JSON.stringify(v_boardList));
+            alert("글쓰기 완료! 게시판으로 이동합니다.");
+            location.replace("boardList.html?page=1&id="+boardId);
+        }
+
+    </script>
+</body>
+
+</html>

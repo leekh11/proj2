@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+</head>
+
+<body>
+    <script>
+        var v_id = request.getParameter("id");
+        var v_pass = request.getParameter("pass");
+
+        var v_tblName = "mem";
+        // 로컬스트로지값 가져오기
+        var memberCk = JSON.parse(localStorage.getItem(v_tblName));
+        var memCheck;
+        var v_flag = false;
+        for (var i = 0; i < memberCk.length; i++) {
+            var memC = memberCk[i];
+            if (v_id == memC.id) {
+                if (memC.pass == v_pass) {
+                    memberCk.splice(i,1);
+                    v_flag = true;
+                } else {
+                    alert("비밀번호가 일치하지 않습니다. 이전 화면으로 돌아갑니다.")
+                    history.go(-1);
+                }
+            }
+        }
+        if(v_flag){
+        localStorage.setItem(v_tblName,JSON.stringify(memberCk) );
+        alert("회원 탈퇴 완료. 메인화면으로 이동합니다.")
+        location.replace("../start.html");
+        }
+    </script>
+</body>
+
+</html>

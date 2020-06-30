@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="../js/pro2.js"></script>
+</head>
+<body>
+    <script>
+ 
+        var v_uniq = request.getParameter("boardUniq");
+        var v_id = request.getParameter("boardId");
+        var v_category = request.getParameter("boardCategory");
+        var v_time = request.getParameter("boardTime");
+        var v_title = request.getParameter("boardTitle");
+        var v_content = request.getParameter("boardContent");
+
+        var boardCk = JSON.parse(localStorage.getItem("board"));
+        for(var i=0; i<boardCk.length; i++){
+            var boC = boardCk[i];
+            if(v_uniq == boC.uniq){
+                boardCk.splice(i,1);
+                break;
+            }
+        }
+        var v_board = {};
+        v_board.uniq = v_uniq;
+        v_board.id = v_id;
+        v_board.category = v_category;
+        v_board.time = v_time;
+        v_board.title =v_title
+        v_board.content = v_content;
+
+        boardCk.push(v_board);
+        localStorage.setItem("board", JSON.stringify(boardCk));
+        alert("수정 완료. 메인화면으로 이동합니다.")
+        location.replace("boardList.html?page=1&id="+v_id);
+    </script>
+</body>
+</html>

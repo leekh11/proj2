@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/pro2.js"></script>
+    <script src="js/wordcloud2.js"></script>
+    <style>
+        #wrapper {
+            /* background-image: url(./images/bg.jpeg);
+            background-repeat: no-repeat;
+            background-size: cover; */
+            background-color: white;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        #header {
+            margin: 0 0;
+            display: flex;
+            margin: 5px auto;
+            height: 30vh;
+            width: 95vw;
+            /* border: 1px solid black; */
+        }
+
+        #content {
+            border-radius: 30px;
+            z-index: 100;
+            background-repeat: no-repeat;
+            background-size: cover;
+            opacity: 0.9;
+            display: flex;
+            margin: 5px auto;
+            height: 50vh;
+            width: 70vw;
+            display: inline-block;
+            /* border: 1px solid black; */
+        }
+
+        #footer {
+            margin: 5px auto;
+            height: 7vh;
+            width: 95vw;
+            /* border: 2px solid black; */
+        }
+
+        .child {
+            width: 230px;
+            color: white;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        #copyRight {
+            height: 20%;
+            font-size: 1px;
+            text-align: center;
+        }
+
+        #footMenu {
+            height: 70%;
+        }
+
+        #a {
+            text-decoration: none;
+            color: black;
+            text-align: center;
+            font-size: 1.3em;
+            line-height: 70px;
+        }
+
+        #right {
+            position: relative;
+            top: 5px;
+            opacity: 0.9;
+            border-radius: 30px;
+            left: -350px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            float: right;
+            width: 10vw;
+            height: 70vh;
+        }
+
+        input[type=button]{
+            margin-right: -4px;
+            background-color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            width: 300px;
+            height: 100px;
+            font-size: 3em;
+            text-align: center;
+            font-weight: 900;
+            font-family:  'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <div style="width: 23vw; ">
+            <a href="start.html"><img src="./images/icon.png" width="250px" height="150px"
+                    style=" border-radius: 50px;"></a>
+        </div>
+        <div style="width: 70vw; text-decoration: none; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; font-size: 1em; color: black;">
+            <div id="id_news" style=" position: relative; top: 30px;  left: 300px; ">
+            </div>
+            <button style="position: relative; left: 500px; border: none; background-color: rgba(0, 0, 0, 0);  color: royalblue;" onclick="f_next()">next >></button>
+            <br>
+        </div>
+    </div>
+    <div id="wrapper">
+        <div id="content" style="margin: 0 auto; position: relative; top: -10px; left: 50px;">
+            <canvas id="id_cloud"  style="position: relative; left: 100px; border-radius: 50px;" width="1000" height="600" ></canvas>
+
+        
+        </div>
+        <div id="right" style="text-align: center; line-height: 5px;">
+            <br><br><br> <br> <br>
+                <input type="button" id="login"   value="로그인">
+                <input type="button" id="regist"   value="회원가입">
+                <input type="button" id="mypage" style="display: none;"   value="마이페이지">
+                <input type="button" id="boardList" style="display: none;" value="게시판">
+                <input type="button"  id="memList" style="display: none;"  value="회원리스트">
+
+        </div>
+
+        <div id="footer">
+            <div id="footMenu">
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div id="copyRight">copyright NextIT Corp. All rights reserved.</div>
+        </div>
+    </div>
+    <script>
+        // id 파라미터 받아오기!
+        var v_id = request.getParameter("id");
+
+
+        // 콘텐트 div변수
+        var v_content = document.getElementById("content");
+
+        // 배경 전환 변수
+        var v_bgURL = "url(./images/";
+        var v_cnt = 1;
+
+        // window.onload
+        window.onload = f_onload;
+        function f_chBG() {
+            // v_cnt = (v_cnt + 1) % 4;
+            // v_content.style.backgroundImage = v_bgURL + v_cnt + "bg.jpeg)";
+            setTimeout(f_chBG, 1000)
+        }
+        function f_onload() {
+            f_chBG();
+        }
+
+
+        // right div 메뉴바 설정
+            document.getElementById("regist").onclick= function() {
+                location.replace("public/회원가입.html");
+            }
+            document.getElementById("memList").onclick= function() {
+                location.replace("public/회원리스트.html");
+            }
+            document.getElementById("boardList").onclick= function() {
+                location.replace("public/boardList.html?page=1&id="+v_id);
+            }
+            document.getElementById("login").onclick= function() {
+                location.replace("public/로그인.html");
+            }
+            document.getElementById("mypage").onclick= function() {
+                location.replace("public/회원수정.html?id="+v_id);
+            }
+
+        var v_nm = "HI"
+            // 관리자 계정 세팅
+            if(v_id == "aa"){
+                document.getElementById("boardList").style.display = "block";
+                document.getElementById("memList").style.display = "block";
+                v_nm = "관리자"
+            }
+        // 로컬 스토리지 값 받아오기 멤버 세팅!
+        var memList =JSON.parse(localStorage.getItem("mem"));
+        for(var i =0; i<memList.length; i++){
+            var mem = memList[i];
+            if(v_id==mem.id){
+                v_nm = mem.name;
+                document.getElementById("boardList").style.display = "block";
+                document.getElementById("login").style.display = "none";
+                document.getElementById("regist").style.display = "none";
+                document.getElementById("mypage").style.display = "block";
+            }
+        }
+        var v_canvas = document.getElementById('id_cloud');
+        var v_list = [ ["hello" , "40"] , ["자유게시판" , "40"] ,  [ v_nm , "120"] , ["こんにちは" , "40"]  , ["您好" , "40"], [ "Bonjour" , "40"]
+                                , ["¡Hola" , "40"] ,["Guten Tag" , "40"] ,["Xin chào" , "40"] ,["Здравствуйте" , "40"] ,["Buon giorno" , "40"] ,["สวัสดีครับ " , "40"] 
+                                ,["Сайн байна уу" , "40"] ,["Thank you" , "40"] ,["ありがとうございます" , "40"] ,["谢谢您" , "40"],["Merci" , "40"]
+                                ,["Se lo agradezco" , "40"],["Vielen Dank" , "40"],["Cảm ơn" , "40"],["Благодарю вас" , "40"]
+                                ,["La ringrazio" , "40"],["Terima kasih " , "40"],["Талархлаа" , "40"],["Au revoir, à demain" , "40"]  ,["안녕하세요" , "40"] 
+                                ,["감사합니다." , "40"]    ];
+        // for(var i=1; i<=10; i++){
+        //     var v_data = ["hi"+i, Math.ceil(Math.random()*10)+10];
+        //     v_list.push(v_data);
+        // }
+        WordCloud(v_canvas, 
+                { 
+                    list: v_list,
+                    // backgroundColor: "magenta",
+                    color: "black", 
+                    drawOutOfBound: true,
+                    // shape: "square",
+                    // color : "random-light",
+                    rotateRatio : 1 ,
+                    fontWeight : 900
+                } 
+        );
+        
+        var startN = 0;
+        var endN = 1;
+
+        $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i < endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+
+        function f_next() {
+            startN = (startN +1)%6;
+            endN = (endN+1)%6;
+            console.log(startN);
+            console.log(endN);
+            $.ajax({
+                method: "get",
+                url: "serverbypass.php?news=뉴스" ,
+                success: function (p_result) {
+                    var v_recevData = JSON.parse(p_result);
+                    for (var i = startN ; i <= endN; i++) {
+                        $("#id_news").html(
+                            v_recevData.channel.item[i].description + "<br>"
+                            );
+                        }
+                    }
+                })
+        }
+
+    </script>
+</body>
+
+</html>

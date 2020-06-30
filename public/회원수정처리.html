@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../js/pro2.js"></script>
+</head>
+<body>
+    <script>
+        console.log(request.getParameter("memAdd1"));
+        console.log(request.getParameter("memId"));
+        var v_id = request.getParameter("memId");
+        var v_pass = request.getParameter("memPass");
+        var v_name = request.getParameter("memName");
+        var v_zip = request.getParameter("memZip");
+        var v_add1 = request.getParameter("memAdd1").replace(/\+/g, " ");
+        var v_add2 = request.getParameter("memAdd2").replace(/\+/g, " ");
+        var v_add3 = request.getParameter("memAdd3").replace(/\+/g, " ");
+        var v_regFront = request.getParameter("memRegFront");
+        var v_regBack = request.getParameter("memRegBack");
+        var v_hp = request.getParameter("memHp");
+        var v_mail = request.getParameter("memMail");
+        
+        // 수정된 값 가져오기
+        var v_tblName = "mem";
+        // 로컬스트로지값 가져오기
+        var memberCk = JSON.parse(localStorage.getItem(v_tblName));
+        var memCheck;
+        for(var i=0; i<memberCk.length; i++){
+            var memC = memberCk[i];
+            if(v_id == memC.id){
+                memCheck = memC;
+                memberCk.splice(i,1);
+                break;
+            }
+        }
+        if(memCheck.pass == v_pass){
+        var v_member = {};
+        v_member.id = v_id;
+        v_member.pass = v_pass;
+        v_member.name = v_name;
+        v_member.zip = v_zip;
+        v_member.address = v_add1 + " / " + v_add2 + " / " + v_add3;
+        v_member.reg = v_regFront + "-" + v_regBack;
+        v_member.hp = v_hp;
+        v_member.mail = v_mail;
+        memberCk.push(v_member);
+        localStorage.setItem(v_tblName, JSON.stringify(memberCk));
+        alert("수정 완료. 메인화면으로 이동합니다.")
+        location.replace("../start.html?id="+v_id);
+        } else {
+            alert("비밀번호가 일치하지 않습니다. 이전 화면으로 돌아갑니다.")
+            history.go(-1);
+        }
+    </script>
+</body>
+</html>
